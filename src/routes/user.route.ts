@@ -1,16 +1,24 @@
-import { loginUser, registerUser } from "controllers/user.controller"
+import { loginUser, registerUser, logoutUser,getMyFriend, getMyFriendRequest,acceptFriendRequest ,sendFriendRequest,searchUser } from "../controllers/user.controller"
 import express from "express"
-import { upload } from "middleware/multer.middleware"
+import { verifyJwt } from "../middleware/auth.middleware"
+import { upload } from "../middleware/multer.middleware"
 
 const userRoute  = express.Router()
 
 
-userRoute.post('/login',upload.single('avatar'),loginUser)
-userRoute.post('/new',registerUser)
+userRoute.post('/login',loginUser)
+userRoute.post('/new',upload.single('avatar'),registerUser)
+userRoute.post('/logout',logoutUser)
+userRoute.get('/getMyFriend',verifyJwt,getMyFriend)
+userRoute.get('/getMyFriendRequest',verifyJwt,getMyFriendRequest)
+userRoute.post('/acceptFriendRequest',verifyJwt,acceptFriendRequest)
+userRoute.post('/sendFriendRequest',verifyJwt,sendFriendRequest)
+userRoute.get('/searchUser',verifyJwt,searchUser)
+
 
 userRoute.get('/',(req,res)=>{
     res.json({
-        msd:"dsa"
+        msd:"User Routes " 
     })
 })
 

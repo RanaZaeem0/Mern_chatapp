@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "npm run dev",
+    "start": "node dist/index.js",
     "build": "tsc -b",
-    "dev": "nodemon --experimental-json-modules dist/index.js",
+    "dev": "nodemon --watch src --exec \"tsc -b && node dist/index.js\"",
+    "watch": "tsc -b --watch",  
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -31,6 +32,7 @@
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.4",
     "socket.io": "^4.7.5",
+    "ts-node": "^10.9.2",
     "uuid": "^10.0.0",
     "zod": "^3.23.8",
     "zod-to-ts": "^1.2.0"

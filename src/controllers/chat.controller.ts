@@ -5,9 +5,10 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { emitEvent } from "../utils/features";
 import { ALERT, REFETCH_CHATS } from "../constants/events";
 import { ApiResponse } from "../utils/apiResponse";
-import { User } from "models/user.model";
-import { chatRoute } from "routes/chat.route";
-import { Message } from "models/message.model";
+import { User } from "../models/user.model";
+import { chatRoute } from "../routes/chat.route";
+import { Message } from "../models/message.model";
+import mongoose from "mongoose";
 
 const newGroupChat = asyncHandler(async (req: Request, res: Response) => {
   const { name, members } = req.body;
@@ -226,12 +227,12 @@ const leaveGroup = asyncHandler(async (req: Request, res: Response) => {
     chat.save(),
   ]);
 
-  emitEvent(req, ALERT, user.members, `${LeaveUser.name} left the group`);
+  emitEvent(req, ALERT, user.members, `${LeaveUser} left the group`);
 
   return res.json(new ApiResponse(201, LeaveUser, "leave group successs"));
 });
 
-const senfAttachment = asyncHandler(async (req: Request, res: Response) => {
+const sendAttachment = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user;
   const { chatId } = req.body;
   const files = req.files;
@@ -247,6 +248,9 @@ const senfAttachment = asyncHandler(async (req: Request, res: Response) => {
 
 const getChatDetails = asyncHandler(async (req: Request, res: Response) => {
   if (req.query.populate === "ture") {
+ 
+    const chatId = req.params.id;
+ 
     const chat = await Chat.aggregate([
       // Match the chat by ID
       {
@@ -351,7 +355,7 @@ const messageWithAttachment = await Message.find({
   attachments: { $exists: true, $ne:[]},
 })
 
-const public_ids = []
+const public_ids:string[] = []
 
 messageWithAttachment.forEach(({attachments})=>{
   attachments.forEach(({public_id})=>{
@@ -367,4 +371,4 @@ messageWithAttachment.forEach(({attachments})=>{
 
 
 
-export { newGroupChat, getMyChat, getMyGroup };
+export { newGroupChat, getMyChat, getMyGroup,deleteChat,renameGroup,getChatDetails,sendAttachment,leaveGroup,removeMembers,addMembers };

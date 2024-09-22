@@ -22,7 +22,7 @@ const schema = new Schema<IChat>(
       default: false,
     },
     creator: {
-      type: Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
     },
     members: [

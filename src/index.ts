@@ -1,27 +1,36 @@
-import express from "express";
-import { userRoute } from "./routes/user.route";
-import {connectDB} from "utils/features";
+
 import dotenv from "dotenv"
-import { chatRoute } from "routes/chat.route";
+import app from "./app";
+import mongoose from "mongoose";
+
+
 
 dotenv.config({
     path:"./.env"
 })
 
-const app = express()
+const DbUri = process.env.MONGOURI;
 
+const connectDB = () => {
+    console.log(DbUri);
+    
+  mongoose
+    .connect(DbUri!, {
+      dbName: "chatsapp",
+    })
+    .then((e) => {
+      console.log(e.connection.host,"connected");
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
 connectDB()
-app.get('/',(req,res)=>{
-res.json({
-    mea:"pk"
-})
-})
-app.use('/user',userRoute)
-app.use('/chat',chatRoute)
+const port = process.env.PORT || 3000
 
 
 
-app.listen(3000,()=>{
-    console.log("server is rounf");
+app.listen(port,()=>{
+    console.log("server is riunf on" + port);
     
 })

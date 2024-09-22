@@ -17,7 +17,7 @@ class ApiError<T> extends Error {
 
  message:string;
     statusCode:number
-    data:T
+    data:any
     success:boolean
     errors:string[]
 
