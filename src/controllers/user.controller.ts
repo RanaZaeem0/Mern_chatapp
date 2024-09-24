@@ -61,7 +61,7 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
     }
  
     const exictedUser = await User.findOne({
-      or: [{ username }],
+  username:username
     });
     
     if (exictedUser) {
@@ -131,20 +131,22 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
 
 const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const loginDataCheck = zod.object({
-    name: zod.string(),
-    passowrd: zod.string(),
+    username: zod.string(),
+    password: zod.string(),
   });
 
   // get name,password
-  const { name, password } = req.body;
-  const validateLogin = loginDataCheck.safeParse({ name, password });
+  const { username, password } = req.body;
+  const validateLogin = loginDataCheck.safeParse({ username, password });
+  console.log(validateLogin.data, "validateLogin");
+  
   if (!validateLogin.success) {
     throw new ApiError(402, "user Input is not correct");
   }
   // check the user is exict
   const user = await User.findOne({
-    $or: [{ name }],
-  });
+    username: username,
+  }).select('+password')
 
   if (!user) {
     throw new ApiError(404, "name or userName  is incorrect");
@@ -223,12 +225,15 @@ const searchUser = asyncHandler(async (req: Request, res: Response) => {
   if (!name) {
     throw new ApiError(400, "name is required");
   }
-
+   console.log(name);
+   
   const user = await User.find({
-    username: { $regex: name, $options: "i" },
+    username: { $regex: `^${name}`, $options: "i" },
   });
 
-  if (!user) {
+  
+
+  if (!user ||user.length === 0 ) {
     throw new ApiError(404, "user not found");
   }
 
@@ -248,12 +253,12 @@ const sendFriendRequest = asyncHandler(async (req: Request, res: Response) => {
 
   const sendRequest = await DBRequest.findOne({
     $or: [
-      { sender: req.user, receiver: userId },
-      { sender: userId, receiver: req.user },
+      { sender: user._id, receiver: userId },
+      { sender: userId, receiver: user._id },
     ],
   });
 
-  if (!sendRequest) {
+  if (sendRequest) {
     throw new ApiError(401, "request already sent");
   }
 
@@ -290,7 +295,9 @@ const acceptFriendRequest = asyncHandler(
     if (!acceptRequest) {
       throw new ApiError(401, "request not found");
     }
-    if (acceptRequest.receiver.toString() !== user._id.toString()) {
+  
+    
+    if (acceptRequest.receiver._id.toString() != user._id.toString()) {
       throw new ApiError(401, "you are not the receiver of this request");
     }
 

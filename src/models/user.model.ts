@@ -1,6 +1,7 @@
 import mongoose, { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { ApiError } from "../utils/apiError";
 
 
 const UserSchema = new Schema(
@@ -45,19 +46,25 @@ UserSchema.pre('save', async function (next) {
 })
 
 UserSchema.methods.isPasswordCorrect = async function (password) {
+  
   return await bcrypt.compare(password, this.password)
 }
 UserSchema.methods.generateAccessToken = function () {
   try {
       const expiresIn = process.env.ACCESS_TOKEN_EXPIRY ;
+           const secret = process.env.ACCESS_TOKEN_SECRET
+      
+           if(!secret){
+            throw new ApiError(500,"process.env.ACCESS_TOKEN_SECRET is not defined")
+          }
 
-      return jwt.sign(
+           return jwt.sign(
           {
               _id: this._id,
               email: this.email,
               username: this.username,
           },
-          process.env.ACCESS_TOKEN_SECRET,
+          secret,
           {
               expiresIn: expiresIn
           }
@@ -73,10 +80,14 @@ UserSchema.methods.generateAccessToken = function () {
 
 }
 UserSchema.methods.generateRefreshToken = function () {
+   const secret = process.env.ACCESS_TOKEN_SECRET
+  if(!secret){
+    throw new ApiError(500,"process.env.ACCESS_TOKEN_EXPIRY is not defined")
+  }
   return jwt.sign({
       _id: this._id,
   },
-      process.env.ACCESS_TOKEN_SECRET,
+      secret,
       {
           expiresIn: process.env.ACCESS_TOKEN_EXPIRY
       }

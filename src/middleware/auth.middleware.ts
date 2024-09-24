@@ -12,21 +12,34 @@ interface JwtPayloadWithId extends jwt.JwtPayload {
 const verifyJwt = asyncHandler(async function (req: Request, res: Response, next: NextFunction) {
   try {
     const token = req.cookies?.accesstoken || req.headers['authorization']?.replace('Bearer ', '');
-
+    
     if (!token) {
       throw new ApiError(401, 'Unauthorized Request');
     }
+    
+    const accessToken  = process.env.ACCESS_TOKEN_SECRET
+    
+    if(!accessToken){
+      throw new ApiError(401, 'Token secret is not defined in Request');
+    }    console.log("enter");
+    
+    
+   
+    
+    const validateToken = jwt.verify(token, accessToken) ;
+ 
+    
 
-    const validateToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as JwtPayloadWithId;
-
-    if (!validateToken || !validateToken._id) {
+    if (!validateToken ) {
       throw new ApiError(401, "Access token is not valid");
     }
 
-    const user = await User.findById(validateToken._id).select('-password -refreshToken');
+    const user = await User.findById(validateToken).select('-password -refreshToken');
     if (!user) {
       throw new ApiError(440, "Cannot find the user with token id");
     }
+
+    
 
     req.user = user;
     next();

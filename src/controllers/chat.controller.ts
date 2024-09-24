@@ -16,8 +16,14 @@ const newGroupChat = asyncHandler(async (req: Request, res: Response) => {
   if (members.length < 2) {
     return new ApiError(433, "member lenght ");
   }
+
+  const user =  req.user
+
+  if(!user){
+    throw new ApiError(402,"user not found")
+  }
   const date = new Date();
-  const allMembers = [...members, req.user];
+  const allMembers = [...members, user._id];
   const createGroup = await Chat.create({
     name,
     groupChat: true,
@@ -29,6 +35,8 @@ const newGroupChat = asyncHandler(async (req: Request, res: Response) => {
 
   res.json(new ApiResponse(201, createGroup, "new Group create "));
 });
+
+
 const getMyChat = asyncHandler(async (req: Request, res: Response) => {
   const { user } = req;
 

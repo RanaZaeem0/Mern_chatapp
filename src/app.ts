@@ -11,10 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'))
 app.use(cookieParser())
 
-app.use(cors({
-    origin: `${process.env.CORS_ORGION}`,
-    credentials: true
-}))
+app.use(cors())
 
 app.get('/api/v1/',(req,res)=>{
     console.log(req);

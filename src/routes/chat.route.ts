@@ -1,5 +1,6 @@
 import { getMyChat, newGroupChat ,renameGroup,getChatDetails,sendAttachment,leaveGroup,removeMembers,addMembers} from "../controllers/chat.controller"
 import express from "express"
+import { verifyJwt } from "../middleware/auth.middleware"
 
 const chatRoute  = express.Router()
 
@@ -11,7 +12,7 @@ chatRoute.get('/',(req,res)=>{
     })
 })
 
-chatRoute.post('/createNewGroup',newGroupChat)
+chatRoute.post('/createNewGroup',verifyJwt,newGroupChat)
 chatRoute.get('/getMyChat',getMyChat)
 chatRoute.put('/renameGroup',renameGroup)
 chatRoute.get('/getChatDetails',getChatDetails)
