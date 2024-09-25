@@ -22,6 +22,7 @@ const uploadOnCloudinary = async (fileLocalPath:string) => {
     })
 
 
+
     const deleteFileSync = (filelocalpath:string) => {
       try {
         fs.unlinkSync(filelocalpath);

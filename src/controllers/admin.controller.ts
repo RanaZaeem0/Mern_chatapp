@@ -10,7 +10,7 @@ import { ApiResponse } from "../utils/apiResponse";
 const loginAdmin  = asyncHandler(
 async(req:Request,res:Response)=>{
 
-    const { secretKey} = req.body
+    const { secretKey,adminSecretKey} = req.body
     const isMatched  = secretKey == adminSecretKey
 
     if(!isMatched) throw new ApiError(402,"secret key is not valed")
@@ -39,3 +39,5 @@ const adminLogout  = asyncHandler(async(req:Request,res:Response)=>{
 
 
 })
+
+ 

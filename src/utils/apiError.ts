@@ -2,16 +2,6 @@ import { StringSchemaDefinition } from "mongoose"
 
 
 
-
-
-
-
-
-
-
-
-
-
 class ApiError<T> extends Error {
 
 
@@ -22,6 +12,11 @@ class ApiError<T> extends Error {
     errors:string[]
 
 
+
+    
+    
+    
+    
     constructor(statusCode,
         message = 'some thing went wrong',
         errors=[],
@@ -32,11 +27,14 @@ class ApiError<T> extends Error {
         this.data = null
         this.message = message
         this.success = false
-         this.errors = errors
-    
-    if(stack){
-        this.stack = stack
-    }else{
+        this.errors = errors
+        
+        if(stack){
+        console.log(errors , "ad");
+
+            this.stack = stack
+        }else{
+        console.log(errors,"asdsa");
         Error.captureStackTrace(this, this.constructor)
     }
     }

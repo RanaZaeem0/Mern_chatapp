@@ -7,10 +7,11 @@ import zod from "zod";
 import { ApiResponse } from "../utils/apiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
 import { Request as DBRequest } from "../models/request.model";
-import { emitEvent } from "../utils/features";
+import { emitEvent, mongooseIdVailder } from "../utils/features";
 import { NEW_REQUEST,REFETCH_CHATS } from "../constants/events";
 import { Chat } from "../models/chat.model";
 import { getOtherMember } from "../lib/helper";
+import mongoose from "mongoose";
 
 const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -73,6 +74,8 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
     public_id: "",
     url:""
   }
+
+  
 
     console.log(avatar, "avatar ho ma");
 
@@ -247,7 +250,10 @@ const sendFriendRequest = asyncHandler(async (req: Request, res: Response) => {
   if (!userId) {
     throw new ApiError(400, "userId is required");
   }
-  if (!user) {
+  if (!mongooseIdVailder(userId)) {
+    throw new ApiError(400, "userId is not valide");
+  }
+    if (!user) {
     throw new ApiError(410, "user not found");
   }
 
