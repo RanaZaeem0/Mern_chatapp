@@ -1,4 +1,4 @@
-import { loginUser, registerUser, logoutUser,getMyFriend, getMyFriendRequest,acceptFriendRequest ,sendFriendRequest,searchUser } from "../controllers/user.controller"
+import { loginUser, registerUser, logoutUser,getMyFriend, getMyFriendRequest,acceptFriendRequest ,sendFriendRequest,searchUser, getUserDetails } from "../controllers/user.controller"
 import express from "express"
 import { verifyJwt } from "../middleware/auth.middleware"
 import { upload } from "../middleware/multer.middleware"
@@ -14,6 +14,8 @@ userRoute.get('/getMyFriendRequest',verifyJwt,getMyFriendRequest)
 userRoute.post('/acceptFriendRequest',verifyJwt,acceptFriendRequest)
 userRoute.post('/sendFriendRequest',verifyJwt,sendFriendRequest)
 userRoute.get('/searchUser',verifyJwt,searchUser)
+userRoute.get('/me',verifyJwt,getUserDetails)
+
 
 
 userRoute.get('/',(req,res)=>{

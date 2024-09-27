@@ -433,5 +433,21 @@ const getMyFriend = asyncHandler(async(req:Request,res:Response)=>{
 })
 
 
+const getUserDetails = asyncHandler(async(req:Request,res:Response)=>{
+    const user = req.user
+    if(!user){
+        throw new ApiError(401,"user not found")}
+      
+     const getUser = await User.findById(user._id)
+     
+     if(!getUser){
+      throw new ApiError(401,"user not found")}
 
-export { loginUser, registerUser, logoutUser,getMyFriend, getMyFriendRequest,acceptFriendRequest ,sendFriendRequest,searchUser};
+      return res.json(new ApiResponse(200,getUser,"user found"))
+
+      
+      })
+
+
+
+export { loginUser,getUserDetails, registerUser, logoutUser,getMyFriend, getMyFriendRequest,acceptFriendRequest ,sendFriendRequest,searchUser};

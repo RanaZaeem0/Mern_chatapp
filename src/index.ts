@@ -7,6 +7,7 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events";
 import { getSocket } from "./lib/helper";
+import { Message } from "./models/message.model";
 
 dotenv.config({
   path: "./.env",
@@ -16,13 +17,17 @@ const server = createServer(app);
  const userSocketIDs  = new Map();
 const io = new Server(server);
 
+io.use((socket,next)=>{
+  
+})
+
 const user = {
   _id: "dada",
   name: "asdsa",
 };
 io.on("connection", (socket) => {
   userSocketIDs.set(user._id.toString(), socket.id);
-  socket.on(NEW_MESSAGE, ({ chatId, message, members }) => {
+  socket.on(NEW_MESSAGE,async ({ chatId, message, members }) => {
     const messageForRealTime = {
       content: message,
       sender: {
@@ -42,6 +47,8 @@ io.on("connection", (socket) => {
     io.to(membersSocket).emit(NEW_MESSAGE_ALERT,{
       chatId
     })
+
+    await Message.create(messageForRealTime);
   });
 
   console.log("user connected", socket.id);
