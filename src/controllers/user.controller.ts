@@ -152,7 +152,7 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
   }).select('+password')
 
   if (!user) {
-    throw new ApiError(404, "name or userName  is incorrect");
+    throw new ApiError(404,'username or password is inCorrect',[]);
   }
 
   const passwordIsValide = await user.isPasswordCorrect(password);

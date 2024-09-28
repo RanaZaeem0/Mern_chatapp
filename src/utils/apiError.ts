@@ -17,10 +17,10 @@ class ApiError<T> extends Error {
     
     
     
-    constructor(statusCode,
-        message = 'some thing went wrong',
-        errors=[],
-        stack = ""
+    constructor(statusCode:number,
+        message:string = 'some thing went wrong',
+        errors:string[] =[],
+        stack:string = ""
     ){
         super(message)
         this.statusCode = statusCode
@@ -30,7 +30,6 @@ class ApiError<T> extends Error {
         this.errors = errors
         
         if(stack){
-        console.log(errors , "ad");
 
             this.stack = stack
         }else{

@@ -13,7 +13,7 @@ cloudinary.config({
 });
 
 
-const uploadOnCloudinary = async (fileLocalPath:string) => {
+const uploadOnCloudinary = async (fileLocalPath) => {
   try {
     if (!fileLocalPath) return console.log('filelocalpath error');
 
