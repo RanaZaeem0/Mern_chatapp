@@ -9,6 +9,7 @@ import { User } from "../models/user.model";
 import { chatRoute } from "../routes/chat.route";
 import { Message } from "../models/message.model";
 import mongoose from "mongoose";
+import { getOtherMember } from "../lib/helper";
 
 const newGroupChat = asyncHandler(async (req: Request, res: Response) => {
   const { name, members } = req.body;
@@ -47,8 +48,29 @@ const getMyChat = asyncHandler(async (req: Request, res: Response) => {
     "members",
     "name avatar"
   );
+  console.log(user._id,"Asdsad",user._id.toString());
 
-  res.json(new ApiResponse(201, chats, "new Group create "));
+  const transformedChats = chats.map(({_id,name,members,groupChat}) => {
+
+    
+    const otherMember = getOtherMember(members,user._id)
+   return {
+    _id,
+    groupChat,
+    avtar:groupChat ? members.slice(0,3).map(({avatar})=>avatar.url): [otherMember.avatar.url],
+    name: groupChat ? name : otherMember.name,
+    members:members.reduce((prev,curr)=>{
+      if(curr._id.toString() !== user._id.toString()){
+        prev.push(curr._id)
+      }
+      return prev
+    },[])
+   }
+
+
+  })
+
+  return res.json(new ApiResponse(201, transformedChats, "chat get success "));
 });
 
 const getMyGroup = asyncHandler(async (req: Request, res: Response) => {

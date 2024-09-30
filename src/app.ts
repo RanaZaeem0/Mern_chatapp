@@ -3,6 +3,7 @@ import express from "express"
 import { chatRoute } from "./routes/chat.route"
 import { userRoute } from "./routes/user.route"
 import cors from "cors"
+import corsOptions  from "./constants/config"
 const app  = express()
 
 
@@ -11,7 +12,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'))
 app.use(cookieParser())
 
-app.use(cors())
+
+app.use(cors({
+    origin: [
+        "http://localhost:5173",
+        "http://localhost:4173",
+      ],
+      methods: ["GET", "POST", "PUT", "DELETE"],
+      credentials: true,
+}))
 
 app.get('/api/v1/',(req,res)=>{
     console.log(req);

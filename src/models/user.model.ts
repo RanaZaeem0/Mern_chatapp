@@ -80,7 +80,7 @@ UserSchema.methods.generateAccessToken = function () {
 
 }
 UserSchema.methods.generateRefreshToken = function () {
-   const secret = process.env.ACCESS_TOKEN_SECRET
+   const secret = process.env.REFRESH_TOKEN_SECRET
   if(!secret){
     throw new ApiError(500,"process.env.ACCESS_TOKEN_EXPIRY is not defined")
   }

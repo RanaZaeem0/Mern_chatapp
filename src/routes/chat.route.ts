@@ -13,7 +13,7 @@ chatRoute.get('/',(req,res)=>{
 })
 
 chatRoute.post('/createNewGroup',verifyJwt,newGroupChat)
-chatRoute.get('/getMyChat',getMyChat)
+chatRoute.get('/getMyChat',verifyJwt,getMyChat)
 chatRoute.put('/renameGroup',renameGroup)
 chatRoute.get('/getChatDetails',getChatDetails)
 chatRoute.post('/sendAttachment',sendAttachment)
