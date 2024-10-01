@@ -3,7 +3,7 @@ import fs from 'fs'
 import dotenv from "dotenv"
 
 dotenv.config({
-  path: '../../env'
+  path: './.env'
 })
 
 cloudinary.config({
@@ -48,7 +48,7 @@ const uploadOnCloudinary = async (fileLocalPath) => {
     };
     deleteFileSync(fileLocalPath)
     console.log('file  unlink');
-    return console.log(`Error during upload `);
+    return console.log(`Error during upload `,error);
 
   }
 }

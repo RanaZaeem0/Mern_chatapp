@@ -70,10 +70,27 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
     }
     
     console.log("exictedUser");
-  const avatar ={
-    public_id: "",
-    url:""
-  }
+
+    const fileLocalPath = req?.file?.path
+
+
+
+    let avatar 
+
+    if(fileLocalPath){
+      const uploadAvatar= await uploadOnCloudinary(fileLocalPath);
+      avatar = {
+        public_id: uploadAvatar?.public_id || "",
+        url: uploadAvatar?.url || "",
+      }
+    }else{
+      avatar = {
+        public_id: "",
+        url:"",
+      }
+    }
+
+
 
   
 
@@ -84,10 +101,7 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
       name,
       bio,
       password,
-      avatar: {
-        public_id: " ",
-        url: " ",
-      }
+      avatar: avatar
     });
 
     console.log(user, "user ho ma");

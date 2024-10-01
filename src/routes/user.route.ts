@@ -8,7 +8,7 @@ const userRoute  = express.Router()
 
 userRoute.post('/login',loginUser)
 userRoute.post('/new',upload.single('avatar'),registerUser)
-userRoute.post('/logout',logoutUser)
+userRoute.post('/logout',verifyJwt,logoutUser)
 userRoute.get('/getMyFriend',verifyJwt,getMyFriend)
 userRoute.get('/getMyFriendRequest',verifyJwt,getMyFriendRequest)
 userRoute.post('/acceptFriendRequest',verifyJwt,acceptFriendRequest)

@@ -10,6 +10,8 @@ const storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         // Generate a unique filename with UUID
+        console.log("inside multer");
+        
         const uniqueSuffix = uuidv4();
         const fileExtension = path.extname(file.originalname);
         const originalName = path.basename(file.originalname, fileExtension);
