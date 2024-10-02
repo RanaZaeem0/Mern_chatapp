@@ -279,7 +279,7 @@ const sendFriendRequest = asyncHandler(async (req: Request, res: Response) => {
   });
 
   if (sendRequest) {
-    throw new ApiError(401, "request already sent");
+    throw new ApiError(401, "request already sent",[""],"");
   }
 
   const createdRequest = await DBRequest.create({

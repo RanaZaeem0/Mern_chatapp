@@ -12,7 +12,7 @@ userRoute.post('/logout',verifyJwt,logoutUser)
 userRoute.get('/getMyFriend',verifyJwt,getMyFriend)
 userRoute.get('/getMyFriendRequest',verifyJwt,getMyFriendRequest)
 userRoute.post('/acceptFriendRequest',verifyJwt,acceptFriendRequest)
-userRoute.post('/sendFriendRequest',verifyJwt,sendFriendRequest)
+userRoute.put('/sendFriendRequest',verifyJwt,sendFriendRequest)
 userRoute.get('/searchUser',searchUser)
 userRoute.get('/me',verifyJwt,getUserDetails)
 
