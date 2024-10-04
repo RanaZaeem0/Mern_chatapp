@@ -12,11 +12,7 @@ interface JwtPayloadWithId extends jwt.JwtPayload {
 const verifyJwt = asyncHandler(async function (req: Request, res: Response, next: NextFunction) {
   try {
     const token = req.cookies?.refreshToken || req.headers['authorization']?.replace('Bearer ', '');
-    console.log(token);
-    console.log(req.cookies,"cookiesrefresh");
-    console.log(req.cookies.refreshToken,"cookiesrefresh");
 
-    console.log(req.headers['authorization'],"cookies");
 
 
     

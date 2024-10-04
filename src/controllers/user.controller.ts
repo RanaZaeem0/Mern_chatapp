@@ -320,7 +320,8 @@ const acceptFriendRequest = asyncHandler(
     if (acceptRequest.receiver._id.toString() != user._id.toString()) {
       throw new ApiError(401, "you are not the receiver of this request");
     }
-
+  console.log(accept,"accpst");
+  
     if (!accept) {
         await acceptRequest.deleteOne();
         return res.json(
@@ -462,6 +463,28 @@ const getUserDetails = asyncHandler(async(req:Request,res:Response)=>{
       
       })
 
+      const getNotification = asyncHandler(async(req:Request,res:Response)=>{
+        const user = req.user
+        if(!user){
+            throw new ApiError(401,"user not found")}
+          
+         const getRequest = await DBRequest.find({receiver:user._id}).populate("sender","name avatar")
+         
+         if(!getRequest){
+          throw new ApiError(401,"user not found")}
+        
+          const allRequests = getRequest.map(({ _id, sender }) => ({
+            _id,
+            sender: {
+              _id: sender._id,
+              name: sender.name,
+              avatar: sender.avatar.url,
+            },
+          }));
 
+          return res.json(new ApiResponse(200,allRequests,"user found"))
+        
+        
+        })
 
-export { loginUser,getUserDetails, registerUser, logoutUser,getMyFriend, getMyFriendRequest,acceptFriendRequest ,sendFriendRequest,searchUser};
+export { loginUser,getUserDetails,getNotification,registerUser, logoutUser,getMyFriend, getMyFriendRequest,acceptFriendRequest ,sendFriendRequest,searchUser};
