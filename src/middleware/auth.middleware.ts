@@ -13,8 +13,6 @@ const verifyJwt = asyncHandler(async function (req: Request, res: Response, next
   try {
     const token = req.cookies?.refreshToken || req.headers['authorization']?.replace('Bearer ', '');
 
-
-
     
     if (!token) {
       throw new ApiError(401, 'Unauthorized Request');
@@ -52,4 +50,38 @@ const verifyJwt = asyncHandler(async function (req: Request, res: Response, next
   }
 });
 
-export { verifyJwt };
+const socketAuthication = asyncHandler(async function (error: any, socket: any, next: any) {
+  try {
+    const token = socket.cookies?.refreshToken || socket.headers['authorization']?.replace('Bearer ', '');
+    if (!token) {
+      throw new ApiError(401, 'Unauthorized Request');
+    }
+    const accessToken  = process.env.REFRESH_TOKEN_SECRET
+    
+    if(!accessToken){
+      throw new ApiError(401, 'Token secret is not defined in Request');
+    }    console.log("enter");
+    
+
+    const validateToken = jwt.verify(token, accessToken) as JwtPayloadWithId;
+    if (!validateToken) {
+      throw new ApiError(401, "Access token is not valid");
+    }
+
+    const user = await User.findById(validateToken._id).select('-password -refreshToken');
+    if (!user) {
+      throw new ApiError(440, "Cannot find the user with token id");
+    }
+    socket.user = user;
+
+ return next()
+
+  }catch (error) {
+    console.error(error);
+    throw new ApiError(444, "Authorization failed");
+  }
+
+
+});
+
+export { verifyJwt,socketAuthication };

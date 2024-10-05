@@ -27,9 +27,7 @@ const io = new Server(server,{
   }
 });
 
-io.use((socket,next)=>{
-  
-})
+
 
 const user = {
   _id: "dada",
