@@ -308,28 +308,28 @@ const acceptFriendRequest = asyncHandler(
       throw new ApiError(410, "user not found");
     }
 
-    const acceptRequest = await DBRequest.findById(requestId)
+    const request = await DBRequest.findById(requestId)
       .populate("sender", "name")
       .populate("receiver", "name");
 
-    if (!acceptRequest) {
+    if (!request) {
       throw new ApiError(401, "request not found");
     }
   
     
-    if (acceptRequest.receiver._id.toString() != user._id.toString()) {
+    if (request.receiver._id.toString() != user._id.toString()) {
       throw new ApiError(401, "you are not the receiver of this request");
     }
   console.log(accept,"accpst");
   
     if (!accept) {
-        await acceptRequest.deleteOne();
+        await request.deleteOne();
         return res.json(
-          new ApiResponse(201, acceptRequest, "request deleted")
+          new ApiResponse(201, request, "request deleted")
         )
       }
 
-      const members = [acceptRequest.sender, acceptRequest.receiver._id];
+      const members = [request.sender, request.receiver._id];
 
 
       const accepted = await DBRequest.findByIdAndUpdate(
@@ -344,6 +344,13 @@ const acceptFriendRequest = asyncHandler(
       if(!accepted){
         throw new ApiResponse(402,"request not accepted")
       }
+      await Promise.all([
+        Chat.create({
+          members,
+          name: `${request.sender.name}-${request.receiver.name}`,
+        }),
+        request.deleteOne(),
+      ]);
 
       emitEvent(req,REFETCH_CHATS,members,"request accepted");
 

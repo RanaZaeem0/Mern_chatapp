@@ -2,6 +2,7 @@ import { loginUser, registerUser, logoutUser,getMyFriend, getMyFriendRequest,acc
 import express from "express"
 import { verifyJwt } from "../middleware/auth.middleware"
 import { upload } from "../middleware/multer.middleware"
+import { getMyMessage } from "../controllers/chat.controller"
 
 const userRoute  = express.Router()
 
@@ -16,6 +17,8 @@ userRoute.put('/sendFriendRequest',verifyJwt,sendFriendRequest)
 userRoute.get('/searchUser',searchUser)
 userRoute.get('/me',verifyJwt,getUserDetails)
 userRoute.get('/getMyNotification',verifyJwt,getNotification)
+userRoute.get('/getMessage/:chatId',verifyJwt,getMyMessage)
+
 
 
 

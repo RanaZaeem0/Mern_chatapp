@@ -3,11 +3,17 @@ import app from "./app";
 import mongoose from "mongoose";
 import connectDB from "./db";
 import { v4 as uuid } from "uuid";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import { createServer } from "http";
 import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events";
 import { getSocket } from "./lib/helper";
 import { Message } from "./models/message.model";
+import cookieParser from "cookie-parser";
+import { socketAuthication } from "./middleware/auth.middleware";
+
+
+
+
 
 dotenv.config({
   path: "./.env",
@@ -15,7 +21,11 @@ dotenv.config({
 
 const server = createServer(app);
  const userSocketIDs  = new Map();
-const io = new Server(server,{
+
+
+
+
+ const io = new Server(server,{
   cors:{
     origin: [
       "http://localhost:5173",
@@ -29,23 +39,34 @@ const io = new Server(server,{
 
 
 
-const user = {
-  _id: "dada",
-  name: "asdsa",
-};
-io.on("connection", (socket) => {
+io.use((socket:any,next: () => void) => {
+  cookieParser()(
+    socket.request,
+    socket.request.res,
+    async (err)=> socketAuthication(err, socket, next)
+  )
+})
+
+
+
+
+io.on("connection", (socket:any) => {
+  const user = socket?.user
+
   userSocketIDs.set(user._id.toString(), socket.id);
-  socket.on(NEW_MESSAGE,async ({ chatId, message, members }) => {
+  
+  socket.on(NEW_MESSAGE,async ({ chatId,  members,message }) => {
     const messageForRealTime = {
       content: message,
       sender: {
         _id: user._id,
         name: user.name,
       },
-      _id: uuid(),
-      chatId: chatId,
+      chat: new mongoose.Types.ObjectId(chatId),
       createAt: new Date().toISOString(),
     };
+
+    
     const membersSocket = getSocket(members)
 
     io.to(membersSocket).emit(NEW_MESSAGE,{

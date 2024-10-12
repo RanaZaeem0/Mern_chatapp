@@ -57,7 +57,7 @@ const getMyChat = asyncHandler(async (req: Request, res: Response) => {
    return {
     _id,
     groupChat,
-    avtar:groupChat ? members.slice(0,3).map(({avatar})=>avatar.url): [otherMember.avatar.url],
+    avatar:groupChat ? members.slice(0,3).map(({avatar})=>avatar.url): [otherMember.avatar.url],
     name: groupChat ? name : otherMember.name,
     members:members.reduce((prev,curr)=>{
       if(curr._id.toString() !== user._id.toString()){
@@ -279,7 +279,9 @@ const sendAttachment = asyncHandler(async (req: Request, res: Response) => {
 const getChatDetails = asyncHandler(async (req: Request, res: Response) => {
   if (req.query.populate === "ture") {
  
-    const chatId = req.params.id;
+    const chatId = req.params.chatId;
+    console.log(chatId,"cahtdid");
+    
  
     const chat = await Chat.aggregate([
       // Match the chat by ID
@@ -318,7 +320,9 @@ const getChatDetails = asyncHandler(async (req: Request, res: Response) => {
 
     return res.json(new ApiResponse(201, chat, "chat found"));
   }else{
-    const chat = await Chat.findById(req.params.id)
+
+    const chatId = req.params.chatId
+    const chat = await Chat.findById(chatId)
 
     if(!chat){
       throw new ApiError(404,"chat not found")
@@ -398,7 +402,51 @@ messageWithAttachment.forEach(({attachments})=>{
 })
 
 
+const getMyMessage = asyncHandler(async (req:Request,res:Response)=>{
+
+  const chatId = req.params.chatId;
+  const page:number  = Number(req.query.page) || 1;
+
+  const resultPerPage = 20;
+  const skip = (page - 1) * resultPerPage;
+
+
+  const chat = await Chat.findById(chatId)
+
+  if(chat?.members.includes(req.user.toString()) ){
+    throw new ApiError(420,"you are not allow to get this msgs")
+  }
+
+  const messagesdsa = await Message.find({chat:chatId})
+  
+
+  const [messages, totalMessagesCount] = await Promise.all([
+    Message.find({ chat: chatId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(resultPerPage)
+      .populate("sender", "name")
+      .lean(),
+    Message.countDocuments({ chat: chatId }),
+  ]);
+  
+  const totalPages = Math.ceil(totalMessagesCount / resultPerPage) || 0;
+
+
+  const messagesData=  [{messages:messages.reverse(),totalPages}]
+
+ return res.json(
+  new ApiResponse(201,
+    messagesData,
+    "message get succss ",
+
+  )
+ )  
+
+
+})
 
 
 
-export { newGroupChat, getMyChat, getMyGroup,deleteChat,renameGroup,getChatDetails,sendAttachment,leaveGroup,removeMembers,addMembers };
+
+export { newGroupChat, getMyChat, getMyGroup,deleteChat,renameGroup,getChatDetails,sendAttachment,leaveGroup,removeMembers,addMembers ,getMyMessage};

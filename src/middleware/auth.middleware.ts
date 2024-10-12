@@ -22,7 +22,7 @@ const verifyJwt = asyncHandler(async function (req: Request, res: Response, next
     
     if(!accessToken){
       throw new ApiError(401, 'Token secret is not defined in Request');
-    }    console.log("enter");
+    }    
     
     
    
@@ -50,9 +50,12 @@ const verifyJwt = asyncHandler(async function (req: Request, res: Response, next
   }
 });
 
-const socketAuthication = asyncHandler(async function (error: any, socket: any, next: any) {
+
+
+
+const socketAuthication = asyncHandler(async function (error:any, socket:any, next:NextFunction) {
   try {
-    const token = socket.cookies?.refreshToken || socket.headers['authorization']?.replace('Bearer ', '');
+    const token = socket.request.cookies?.refreshToken
     if (!token) {
       throw new ApiError(401, 'Unauthorized Request');
     }
@@ -60,7 +63,7 @@ const socketAuthication = asyncHandler(async function (error: any, socket: any, 
     
     if(!accessToken){
       throw new ApiError(401, 'Token secret is not defined in Request');
-    }    console.log("enter");
+    }    
     
 
     const validateToken = jwt.verify(token, accessToken) as JwtPayloadWithId;
@@ -72,6 +75,7 @@ const socketAuthication = asyncHandler(async function (error: any, socket: any, 
     if (!user) {
       throw new ApiError(440, "Cannot find the user with token id");
     }
+
     socket.user = user;
 
  return next()
