@@ -433,7 +433,7 @@ const getMyMessage = asyncHandler(async (req:Request,res:Response)=>{
   const totalPages = Math.ceil(totalMessagesCount / resultPerPage) || 0;
 
 
-  const messagesData=  [{messages:messages.reverse(),totalPages}]
+  const messagesData=  {messages:messages.reverse(),totalPages}
 
  return res.json(
   new ApiResponse(201,
