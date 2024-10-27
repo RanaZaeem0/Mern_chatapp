@@ -34,6 +34,18 @@ async(req:Request,res:Response)=>{
 
 })
 
+
+// const createAdmin= asyncHandler( async (req:Response,res:Request)=>{
+
+// const {adminId,NewAdminId } = req.body
+
+// if(!adminId , !NewAdminId){
+//     throw new ApiError(403,"can not get the adminId or newADin id")
+// }
+
+// })
+
+
 const adminLogout  = asyncHandler(async(req:Request,res:Response)=>{
 
 
