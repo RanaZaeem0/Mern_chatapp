@@ -47,7 +47,6 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
 
     //   take data from frontend
     const { username, password, name,bio } = req.body;
-    console.log(req.body ,"asdas");
 
     const validate = UserDataCheck.safeParse({
       username: username,
@@ -55,7 +54,6 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
       name: name,
       bio:bio
     });
-    console.log(validate.data);
       
     if (!validate.success) {
       throw new ApiError(400, "user data is not valid");
@@ -69,7 +67,6 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
       throw new ApiError(401, "User Name or name is Alredy Exicted");
     }
     
-    console.log("exictedUser");
 
     const fileLocalPath = req?.file?.path
 
@@ -94,7 +91,6 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
 
   
 
-    console.log(avatar, "avatar ho ma");
 
     const user = await User.create({
       username,
@@ -155,7 +151,6 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
   // get name,password
   const { username, password } = req.body;
   const validateLogin = loginDataCheck.safeParse({ username, password });
-  console.log(validateLogin.data, "validateLogin");
   
   if (!validateLogin.success) {
     throw new ApiError(402, "user Input is not correct");
@@ -174,8 +169,6 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
   if (!passwordIsValide) {
     throw new ApiError(400, "passwrid is not valide");
   }
-  console.log(user._id);
-
   const { refreshToken, accessToken } = await generateAccessAndRefreshToken(
     user._id
   );
@@ -210,7 +203,6 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const logoutUser = asyncHandler(async (req: Request, res: Response) => {
-  console.log(req.user._id);
 
   await User.findByIdAndUpdate(
     req.user._id,
@@ -242,7 +234,6 @@ const searchUser = asyncHandler(async (req: Request, res: Response) => {
   if (!name) {
     throw new ApiError(400, "name is required");
   }
-   console.log(name);
    
   const user = await User.find({
     username: { $regex: `^${name}`, $options: "i" },
@@ -320,7 +311,6 @@ const acceptFriendRequest = asyncHandler(
     if (request.receiver._id.toString() != user._id.toString()) {
       throw new ApiError(401, "you are not the receiver of this request");
     }
-  console.log(accept,"accpst");
   
     if (!accept) {
         await request.deleteOne();

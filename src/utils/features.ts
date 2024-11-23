@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { getSocket } from "../lib/helper";
 
 
 const mongooseIdVailder = (id:string) => {
@@ -9,8 +10,11 @@ const mongooseIdVailder = (id:string) => {
   }
 }
 
-const emitEvent = (req,event ,user,data)=>{
-  console.log("emetie "+ event);
+const emitEvent = (req,event ,users,data)=>{
+  const io = req.app.get('io')
+  
+  const userSocket = getSocket(users)
+  io.to(userSocket).emit(event,data)
   
 }
 

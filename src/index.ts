@@ -20,7 +20,7 @@ dotenv.config({
 });
 
 const server = createServer(app);
- const userSocketIDs  = new Map();
+  const userSocketIDs  = new Map();
 
 
 
@@ -36,6 +36,8 @@ const server = createServer(app);
     credentials: true,
   }
 });
+
+app.set('io',io)
 
 
 
@@ -66,6 +68,7 @@ io.on("connection", (socket:any) => {
       createAt: new Date().toISOString(),
     };
 
+    console.log(NEW_MESSAGE,"da",members);
     
     const membersSocket = getSocket(members)
 

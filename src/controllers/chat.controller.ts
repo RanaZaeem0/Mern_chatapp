@@ -3,12 +3,12 @@ import { Chat } from "../models/chat.model";
 import { ApiError } from "../utils/apiError";
 import { asyncHandler } from "../utils/asyncHandler";
 import { emitEvent } from "../utils/features";
-import { ALERT, REFETCH_CHATS } from "../constants/events";
+import { ALERT, NEW_MESSAGE, NEW_MESSAGE_ALERT, REFETCH_CHATS } from "../constants/events";
 import { ApiResponse } from "../utils/apiResponse";
 import { User } from "../models/user.model";
 import { Message } from "../models/message.model";
 import mongoose from "mongoose";
-import { getOtherMember } from "../lib/helper";
+import { getOtherMember, unLinkFileOnError } from "../lib/helper";
 import zod, { ZodFirstPartyTypeKind } from "zod";
 import {
   uploadFilesToCloudinary,
@@ -295,38 +295,69 @@ const sendAttachment = asyncHandler(async (req: Request, res: Response) => {
   const { chatId } = req.body;
 
   const files: any = req.files;
+  
+  const [chat, me] = await Promise.all([
+    Chat.findById(chatId),
+    User.findById(req.user, "name"),
+  ]);
   if(!user){
+    unLinkFileOnError(files)
     throw new ApiError(404,"can't get user")
   }
   if(!chatId){
+    unLinkFileOnError(files)
     throw new ApiError(404,"can't get chatID")
+
   }
   if (!files || (Array.isArray(files) && files.length === 0)) {
+    unLinkFileOnError(files)
     throw new ApiError(400, "No files provided");
+
   }
 
   if (Array.isArray(files) && files.length > 5) {
+    unLinkFileOnError(files)
     throw new ApiError(400, "Cannot send more than 5 files");
+
   }
 
   const attachments = await uploadFilesToCloudinary(files);
-console.log(user,"user");
-console.log(user,"chatId");
 
+  if(!attachments){
+   throw new ApiError(404,"Plz reSend")
+  }
+ 
 
-  const messageDB = [
-    {
+  if(!chat){
+    unLinkFileOnError(files)
+    throw new ApiError(404,"chatId not Exicted")
+  }
+  if(!me){
+    unLinkFileOnError(files)
+    throw new ApiError(404,"User not Exicted")
+  }
+  const messageDB =    {
       content: "",
       attachments,
       sender: user,
       chat: chatId,
+    }
+
+  const messageForRealTime = {
+    ...messageDB,
+    sender: {
+      _id: me._id,
+      name: me.name,
     },
-  ];
+  };
+
   
-  const message = await Message.create(messageDB);
+  const message = await Message.create([messageDB]);
   if (!message) {
     throw new ApiError(404, "can't send message in Db");
-  }
+  }  
+ emitEvent(req,NEW_MESSAGE,chat.members,{chatId,message:messageForRealTime})
+
   return res.json(new ApiResponse(201, message, "Attchment get success"));
 
 

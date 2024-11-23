@@ -4,7 +4,6 @@ import env from "dotenv"
 
 
 const connectDB = (DbUri:string) => {
-    console.log(DbUri);
     
   mongoose
     .connect(DbUri!, {
