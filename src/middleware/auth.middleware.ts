@@ -15,7 +15,7 @@ const verifyJwt = asyncHandler(async function (req: Request, res: Response, next
 
     
     if (!token) {
-      throw new ApiError(401, 'Unauthorized Request');
+      throw new ApiError(401, 'Unauthorized Request token');
     }
     
     const accessToken  = process.env.REFRESH_TOKEN_SECRET
@@ -57,7 +57,7 @@ const socketAuthication = asyncHandler(async function (error:any, socket:any, ne
   try {
     const token = socket.request.cookies?.refreshToken
     if (!token) {
-      throw new ApiError(401, 'Unauthorized Request');
+      throw new ApiError(401, 'Unauthorized Request socket');
     }
     const accessToken  = process.env.REFRESH_TOKEN_SECRET
     

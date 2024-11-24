@@ -47,7 +47,7 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
 
     //   take data from frontend
     const { username, password, name,bio } = req.body;
-
+  
     const validate = UserDataCheck.safeParse({
       username: username,
       password: password,
@@ -58,6 +58,7 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
     if (!validate.success) {
       throw new ApiError(400, "user data is not valid");
     }
+    
  
     const exictedUser = await User.findOne({
   username:username
