@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 import app from "./app";
 import mongoose from "mongoose";
 import connectDB from "./db";
-import { v4 as uuid } from "uuid";
 import { Server, Socket } from "socket.io";
 import { createServer } from "http";
 import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events";
@@ -49,7 +48,7 @@ io.use((socket:any,next: () => void) => {
     socket.request.res,
     async (err)=> socketAuthication(err, socket, next)
   )
-})
+   })
 
 
 
@@ -87,7 +86,7 @@ io.on("connection", (socket:any) => {
 
   console.log("user connected", socket.id);
 
-  socket.on("disconnect", (socket) => {
+  socket.on("disconnect", () => {
     console.log("user is disconnects");
 
     userSocketIDs.delete(user._id.toString());
