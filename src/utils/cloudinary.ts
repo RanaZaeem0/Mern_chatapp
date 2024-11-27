@@ -53,7 +53,7 @@ const uploadOnCloudinary = async (fileLocalPath) => {
 
   }
 }
-const uploadFilesToCloudinary = async (files: Express.Multer.File[] = []) => {
+const uploadFilesToCloudinary = async (files:any) => {
   const uploadPromises = files.map(async (file) => {
     try {
       // Get base64 of file

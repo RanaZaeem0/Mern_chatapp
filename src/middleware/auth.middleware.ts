@@ -59,7 +59,7 @@ const socketAuthication = asyncHandler(async function (error:any, socket:any, ne
   try {
 
     const token = socket.request.cookies?.refreshToken
-    console.log(token);
+    console.log(token,"socket token");
     
     if (!token) {
       throw new ApiError(401, 'Unauthorized Request socket');

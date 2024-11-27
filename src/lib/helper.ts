@@ -20,9 +20,6 @@ export const getSocket = (users:any)=>{
 }
 
 export const getBase64 = async (file) =>{
-  console.log(file,
-    "files single"
-  );
   const fileBuffer = await fs.promises.readFile(file.path);  
     return `data:${file.mimetype};base64,${fileBuffer.toString("base64")}`;
 }
