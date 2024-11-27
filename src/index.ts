@@ -51,7 +51,12 @@ io.use((socket:any,next: () => void) => {
    })
 
 
-
+   io.on("connection", (socket) => {
+    console.log("New WebSocket connection:", socket.id);
+    socket.on(NEW_MESSAGE, (data) => {
+      console.log("NEW_MESSAGE received:", data);
+    });
+  });
 
 io.on("connection", (socket:any) => {
   const user = socket?.user
