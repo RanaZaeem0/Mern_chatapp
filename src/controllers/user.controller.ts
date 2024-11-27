@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { CookieOptions, Request, Response } from "express";
 import { User } from "../models/user.model";
 import { ApiError } from "../utils/apiError";
 
@@ -181,9 +181,10 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
   if (!loginUser) {
     throw new ApiError(404, "login User is not there");
   }
-  const options = {
+  const options:CookieOptions = {
     httpOnly: true,
     secure: true,
+    sameSite:"none"
   };
 
   return res
