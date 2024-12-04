@@ -58,7 +58,8 @@ console.log(req.cookies?.refreshToken || req.headers['authorization']?.replace('
 const socketAuthication = asyncHandler(async function (error:any, socket:any, next:NextFunction) {
   try {
 
-    const token = socket.request.cookies?.refreshToken
+    const token = socket.request.cookies?.refreshToken || socket.request.headers['authorization']?.replace('Bearer ', '');
+
     console.log(token,"socket token");
     
     if (!token) {
