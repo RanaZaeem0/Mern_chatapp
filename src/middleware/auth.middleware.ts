@@ -11,7 +11,6 @@ interface JwtPayloadWithId extends jwt.JwtPayload {
 
 const verifyJwt = asyncHandler(async function (req: Request, res: Response, next: NextFunction) {
   try {
-console.log(req.cookies?.refreshToken || req.headers['authorization']?.replace('Bearer ', ''));
 
     const token = req.cookies?.refreshToken || req.headers['authorization']?.replace('Bearer ', '');
 
@@ -60,7 +59,6 @@ const socketAuthication = asyncHandler(async function (error:any, socket:any, ne
 
     const token = socket.request.cookies?.refreshToken || socket.request.headers['authorization']?.replace('Bearer ', '');
 
-    console.log(token,"socket token");
     
     if (!token) {
       throw new ApiError(401, 'Unauthorized Request socket');

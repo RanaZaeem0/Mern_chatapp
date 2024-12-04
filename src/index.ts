@@ -35,7 +35,8 @@ const server = createServer(app);
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
-  }
+  },
+  transports: ["websocket", "polling"],
 });
 
 app.set('io',io)
