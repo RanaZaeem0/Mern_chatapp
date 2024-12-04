@@ -181,10 +181,9 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
   if (!loginUser) {
     throw new ApiError(404, "login User is not there");
   }
-  const options:CookieOptions = {
+  const options = {
     httpOnly: true,
     secure: true,
-    sameSite:"none"
   };
 
   return res
