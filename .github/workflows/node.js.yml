@@ -33,4 +33,4 @@ jobs:
     - name: Set Environment Variables
       run: |
         touch .env
-        echo "${{ secrets.PROD_ENV_FILE }}" > .env
+        echo "${{ secrets.PROD_ENV_FILE }}" >> .env
