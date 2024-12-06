@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x] # Use LTS versions
+        node-version: [22.x] # Use LTS versions
 
     steps:
     - name: Checkout Code
