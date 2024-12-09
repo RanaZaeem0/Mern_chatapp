@@ -120,14 +120,16 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
       throw new ApiError(403, "User is not created in database");
     }
 
-    const options = {
+    const cookieOptions = {
+      maxAge: 15 * 24 * 60 * 60 * 1000,
+      sameSite: "none" as "none",
       httpOnly: true,
       secure: true,
     };
     return res
       .status(201)
-      .cookie("refreshToken", refreshToken, options)
-      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, cookieOptions)
+      .cookie("accessToken", accessToken, cookieOptions)
 
       .json(
         new ApiResponse(
@@ -181,15 +183,17 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
   if (!loginUser) {
     throw new ApiError(404, "login User is not there");
   }
-  const options = {
+  const cookieOptions = {
+    maxAge: 15 * 24 * 60 * 60 * 1000,
+    sameSite: "none" as "none",
     httpOnly: true,
     secure: true,
   };
 
   return res
     .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken, cookieOptions)
+    .cookie("refreshToken", refreshToken, cookieOptions)
     .json(
       new ApiResponse(
         200,

@@ -47,6 +47,12 @@ UserSchema.methods.isPasswordCorrect = async function (password) {
   
   return await bcrypt.compare(password, this.password)
 }
+const cookieOptions = {
+  maxAge: 15 * 24 * 60 * 60 * 1000,
+  sameSite: "none",
+  httpOnly: true,
+  secure: true,
+};
 UserSchema.methods.generateAccessToken = function () {
   try {
       const expiresIn = process.env.ACCESS_TOKEN_EXPIRY ;
@@ -63,9 +69,6 @@ UserSchema.methods.generateAccessToken = function () {
               username: this.username,
           },
           secret,
-          {
-              expiresIn: expiresIn
-          }
       )
   } catch (error) {
       console.log(error + "creating accestoken");
@@ -86,9 +89,6 @@ UserSchema.methods.generateRefreshToken = function () {
       _id: this._id,
   },
       secret,
-      {
-          expiresIn: process.env.ACCESS_TOKEN_EXPIRY
-      }
   )
 }
 
