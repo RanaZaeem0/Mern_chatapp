@@ -9,6 +9,7 @@ import { getSocket } from "./lib/helper";
 import { Message } from "./models/message.model";
 import cookieParser from "cookie-parser";
 import { socketAuthication } from "./middleware/auth.middleware";
+import errorHandler from "./utils/errorHandler";
 
 
 
@@ -101,6 +102,7 @@ const DbUri = process.env.MONGOURI;
 
 connectDB(DbUri!);
 const port = process.env.PORT || 3000;
+app.use(errorHandler)
 
 server.listen(port, () => {
   console.log("server is riunf on" + port);
