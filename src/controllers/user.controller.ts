@@ -1,4 +1,4 @@
-import { CookieOptions, Request, Response } from "express";
+import { Request, Response } from "express";
 import { User } from "../models/user.model";
 import { ApiError } from "../utils/apiError";
 
@@ -221,15 +221,17 @@ const logoutUser = asyncHandler(async (req: Request, res: Response) => {
     }
   );
 
-  const options = {
+  const cookieOptions = {
+    maxAge: 15 * 24 * 60 * 60 * 1000,
+    sameSite: "none" as "none",
     httpOnly: true,
     secure: true,
   };
 
   return res
     .status(201)
-    .clearCookie("refreshToken", options)
-    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", cookieOptions)
+    .clearCookie("accessToken", cookieOptions)
     .json(new ApiResponse(200, {}, "user logout sucees"));
 });
 
