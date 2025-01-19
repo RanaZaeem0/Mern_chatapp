@@ -14,6 +14,7 @@ import {
   uploadFilesToCloudinary,
   uploadOnCloudinary,
 } from "../utils/cloudinary";
+import { log } from "console";
 
 const newGroupChat = asyncHandler(async (req: Request, res: Response) => {
   const newGroupValide = zod.object({
@@ -56,22 +57,29 @@ const getMyChat = asyncHandler(async (req: Request, res: Response) => {
   const { user } = req;
 
   if (!user) {
-    new ApiError(401, "user not found");
+    throw new ApiError(401, "user not found");
   }
   const chats = await Chat.find({ members: { $in: [user] } }).populate(
     "members",
     "name avatar"
   );
-  console.log(user._id, "Asdsad", user._id.toString());
+
+  
+  console.log(user._id, "Asdsad", user._id.toString(),chats);
+  
 
   const transformedChats = chats.map(({ _id, name, members, groupChat }) => {
     const otherMember = getOtherMember(members, user._id);
+    console.log(otherMember,"dataother");
+    
+    console.log("othermeber", otherMember,otherMember.name);
+  
     return {
       _id,
       groupChat,
       avatar: groupChat
-        ? members.slice(0, 3).map(({ avatar }) => avatar.url)
-        : [otherMember.avatar.url],
+      ? members.slice(0, 3).map(({ avatar }) => avatar?.url || '')
+      : [otherMember?.avatar?.url || ''],
       name: groupChat ? name : otherMember.name,
       members: members.reduce((prev, curr) => {
         if (curr._id.toString() !== user._id.toString()) {
@@ -80,7 +88,12 @@ const getMyChat = asyncHandler(async (req: Request, res: Response) => {
         return prev;
       }, []),
     };
+    
   });
+
+
+  console.log(transformedChats,"transformedChats");
+  
 
   return res.json(new ApiResponse(201, transformedChats, "chat get success "));
 });
@@ -398,6 +411,7 @@ const getChatDetails = asyncHandler(async (req: Request, res: Response) => {
         },
       },
     ]);
+console.log(chat,"database call");
 
     if (!chat) {
       throw new ApiError(404, "chat not found");
@@ -411,6 +425,9 @@ const getChatDetails = asyncHandler(async (req: Request, res: Response) => {
     if (!chat) {
       throw new ApiError(404, "chat not found");
     }
+
+    console.log(chat,"chatdetils");
+    
     return res.json(new ApiResponse(201, chat, "chat found"));
   }
 });

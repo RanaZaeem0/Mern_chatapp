@@ -2,9 +2,15 @@
 import {userSocketIDs} from "../index"
 import fs from "fs"
 import { ApiError } from "../utils/apiError";
+import { log } from "console";
 
-export const getOtherMember = (members:any, userId:string) =>
-    members.find((member) => member._id.toString() !== userId.toString());
+export const getOtherMember = (members:any, userId:string) =>{
+  
+  console.log(members,userId,"othermenter id adta");
+  
+  const memberss = members.find((member) => member._id.toString() !== userId.toString())
+return memberss
+}
 
 
 export const getSocket = (users:any)=>{

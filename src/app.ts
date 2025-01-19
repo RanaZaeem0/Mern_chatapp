@@ -32,13 +32,6 @@ res.json({
     mea:"pk"
 })
 })
-app.post('/api/v1/',(req,res)=>{
-    console.log(req.body,"adasdasdasdas");
-    
-res.json({
-    mea:"pk"
-})
-})
 
 app.use('/api/v1/user',userRoute)
 app.use('/api/v1/chat',chatRoute)
